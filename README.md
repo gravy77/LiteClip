@@ -9,13 +9,13 @@ LiteClip is a replay-buffer clipper and mini editor for Windows. It uses your GP
 
 <br>
 
-[![Build](https://github.com/fenziiarg/LiteClip/actions/workflows/ci.yml/badge.svg)](https://github.com/fenziiarg/LiteClip/actions/workflows/ci.yml)
-[![Release](https://img.shields.io/github/v/release/fenziiarg/LiteClip?color=4aa3ff&label=download)](https://github.com/fenziiarg/LiteClip/releases/latest)
+[![Build](https://github.com/gravy77/LiteClip/actions/workflows/ci.yml/badge.svg)](https://github.com/gravy77/LiteClip/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/gravy77/LiteClip?color=4aa3ff&label=download)](https://github.com/gravy77/LiteClip/releases/latest)
 [![License: MIT](https://img.shields.io/badge/license-MIT-7c5cff)](LICENSE)
 ![Platform](https://img.shields.io/badge/platform-Windows%2010%20%7C%2011-0f1117)
 ![Rust](https://img.shields.io/badge/made%20with-Rust-dea584?logo=rust&logoColor=white)
 
-[**Download**](https://github.com/fenziiarg/LiteClip/releases/latest) · [Features](#-features) · [Getting started](#-getting-started) · [Build from source](#-build-from-source) · [FAQ](#-faq)
+[**Download**](https://github.com/gravy77/LiteClip/releases/latest) · [Features](#-features) · [Getting started](#-getting-started) · [Build from source](#-build-from-source) · [FAQ](#-faq)
 
 </div>
 
@@ -52,7 +52,7 @@ LiteClip does one job:
    ```powershell
    winget install Gyan.FFmpeg.Essentials
    ```
-2. **Download `LiteClip.exe`** from the [latest release](https://github.com/fenziiarg/LiteClip/releases/latest) and run it. It doesn't need an installer.
+2. **Download `LiteClip.exe`** from the [latest release](https://github.com/gravy77/LiteClip/releases/latest) and run it. It doesn't need an installer.
 3. Play something and press **`F8`**. Your clip is saved to `Videos\LiteClip`.
 
 > [!TIP]
