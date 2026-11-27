@@ -1,10 +1,16 @@
 <div align="center">
 
-<img src="assets/banner.svg" alt="LiteClip" width="100%">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/banner-dark.svg">
+  <img src="assets/banner-light.svg" alt="LiteClip keeps the last seconds of your screen in 2-second segments and saves them as an MP4 when you press F8" width="100%">
+</picture>
 
 [![Build](https://github.com/gravy77/LiteClip/actions/workflows/ci.yml/badge.svg)](https://github.com/gravy77/LiteClip/actions/workflows/ci.yml)
 [![Release](https://img.shields.io/github/v/release/gravy77/LiteClip?label=release)](https://github.com/gravy77/LiteClip/releases/latest)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+![Platform: Windows](https://img.shields.io/badge/platform-Windows-lightgrey)
+
+**[Download](https://github.com/gravy77/LiteClip/releases/latest)** · [How it works](#how-it-works) · [Shortcuts](#usage) · [Build from source](#building)
 
 </div>
 
@@ -12,9 +18,15 @@ LiteClip is a replay-buffer screen recorder for Windows. It keeps the last 10 to
 
 It's meant for low-end machines. Encoding runs on the GPU, saving a clip doesn't re-encode anything, and the app itself is a single native executable of about 4 MB. It doesn't connect to the internet: there are no accounts, uploads, telemetry or update checks.
 
+<p align="center">
+  <img src="assets/clips.png" alt="LiteClip's clip library right after pressing F8, with the 'Clip saved' notice in the corner" width="100%">
+  <br>
+  <sub>The clip library right after pressing F8: a 12-second 1080p60 clip, 3.4 MB</sub>
+</p>
+
 ## Features
 
-- **Replay buffer.** Press `F8` to save the last N seconds. The buffer is already encoded, so saving takes under a second.
+- **Replay buffer.** Press <kbd>F8</kbd> to save the last N seconds. The buffer is already encoded, so saving takes under a second.
 - **Hardware encoding.** Uses NVIDIA NVENC, Intel Quick Sync or AMD AMF, picked automatically. Falls back to x264 on the CPU.
 - **Audio.** Records system sound and a microphone, each with its own device and volume. Both are mixed into one track.
 - **Editor.** Split, cut sections, and trim the start or end. Change speed (0.25× to 4×), volume, resolution and frame rate. A single trim with no other changes is exported without re-encoding.
@@ -22,7 +34,10 @@ It's meant for low-end machines. Encoding runs on the GPU, saving a clip doesn't
 - **Global hotkeys.** Work in fullscreen games and while the window is minimized.
 - **Recovery.** If capture stops (for example after a display mode change), it restarts automatically. If Desktop Duplication is unavailable, it switches to GDI capture.
 
-On an Intel i5-1035G4 with Iris Plus graphics, recording 1080p at 30 fps used about 17% of one CPU core in the ffmpeg process and about 2% in the UI.
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/numbers-dark.svg">
+  <img src="assets/numbers-light.svg" alt="4 MB executable, under 1 second to save a clip, no network requests. While recording 1080p at 30 fps on an Intel i5-1035G4 with Iris Plus graphics, ffmpeg uses about 17% of one CPU core and the LiteClip window about 2%" width="100%">
+</picture>
 
 ## Installation
 
@@ -36,18 +51,24 @@ Then download `LiteClip.exe` from the [releases page](https://github.com/gravy77
 
 ## Usage
 
-The replay buffer starts when the app opens. Press `F8` to save a clip. Clips are saved to `Videos\LiteClip` by default.
+The replay buffer starts when the app opens. Press <kbd>F8</kbd> to save a clip. Clips are saved to `Videos\LiteClip` by default.
 
 | Key | Action |
 |---|---|
-| `F8` | Save clip |
-| `Alt+F8` | Start or stop the replay buffer |
-| `Space` | Play or pause (editor) |
-| `S` | Split at the playhead (editor) |
-| `D` | Cut or keep the current section (editor) |
-| `Left` / `Right` | Seek one second (editor) |
+| <kbd>F8</kbd> | Save clip |
+| <kbd>Alt</kbd>+<kbd>F8</kbd> | Start or stop the replay buffer |
+| <kbd>Space</kbd> | Play or pause (editor) |
+| <kbd>S</kbd> | Split at the playhead (editor) |
+| <kbd>D</kbd> | Cut or keep the current section (editor) |
+| <kbd>←</kbd> / <kbd>→</kbd> | Seek one second (editor) |
 
 You can change the global hotkeys in Settings.
+
+<p align="center">
+  <img src="assets/editor.svg" alt="Illustration of the LiteClip editor: video preview, a timeline with one section cut, and export settings" width="100%">
+  <br>
+  <sub>The editor, drawn from the app's layout</sub>
+</p>
 
 On slower hardware, lowering the resolution to 720p and the frame rate to 30 fps reduces encoder load and file size.
 
@@ -70,6 +91,11 @@ Files are stored here:
 
 ## How it works
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/how-it-works-dark.svg">
+  <img src="assets/how-it-works-light.svg" alt="FFmpeg captures the screen, encodes it on the GPU and splits it into 2-second segments. System sound and microphone are mixed in Rust and piped into FFmpeg. F8 joins the latest segments with stream copy into an MP4" width="100%">
+</picture>
+
 FFmpeg captures the screen with Desktop Duplication (`ddagrab`), encodes it with the hardware encoder, and writes 2-second MPEG-TS segments to disk. Only the most recent segments are kept.
 
 System sound (WASAPI loopback) and the microphone are captured in Rust with [cpal](https://github.com/RustAudio/cpal). Both are resampled to 48 kHz and mixed on a clock-driven thread, so the audio stays in sync even when nothing is playing. The mixed audio is piped into FFmpeg.
@@ -90,6 +116,8 @@ winget install BrechtSanders.WinLibs.POSIX.UCRT
 ```
 
 `build.ps1` writes `LiteClip.exe` to the project root and strips local paths from the binary. With the MSVC toolchain, `cargo build --release` is enough.
+
+The images in this README are generated by `node assets/generate.mjs`.
 
 ## Limitations
 
