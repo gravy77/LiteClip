@@ -352,7 +352,7 @@ impl LiteApp {
                     ui.label(RichText::new("● BUFFERING").color(REC_RED).strong());
                     ui.label(RichText::new(fmt_time(started.elapsed().as_secs_f64()).split('.').next().unwrap_or("").to_string()).monospace())
                         .on_hover_text(format!("Encoder: {enc}"));
-                    if ui.button("■ Stop").clicked() {
+                    if ui.button("Stop").clicked() {
                         let e = self.engine.clone();
                         thread::spawn(move || e.stop_buffer());
                     }
@@ -362,8 +362,8 @@ impl LiteApp {
                     ui.label("Starting…");
                 }
                 _ => {
-                    ui.label(RichText::new("○ Buffer off").weak());
-                    if ui.button("▶ Start buffer").clicked() {
+                    ui.label(RichText::new("Buffer off").weak());
+                    if ui.button("Start buffer").clicked() {
                         let e = self.engine.clone();
                         thread::spawn(move || e.start_buffer());
                     }
@@ -371,7 +371,7 @@ impl LiteApp {
             }
             let hk = self.engine.settings.lock().unwrap().hotkey_clip.clone();
             let saving = self.engine.saving.load(std::sync::atomic::Ordering::Relaxed);
-            let btn = egui::Button::new(RichText::new(if saving { "Saving…" } else { "💾 Save clip" }).strong())
+            let btn = egui::Button::new(RichText::new(if saving { "Saving…" } else { "Save clip" }).strong())
                 .fill(if state == ON { ACCENT.linear_multiply(0.45) } else { Color32::from_gray(50) });
             if ui
                 .add_enabled(state == ON && !saving, btn)
@@ -382,9 +382,9 @@ impl LiteApp {
                 thread::spawn(move || e.save_clip());
             }
             ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
-                ui.selectable_value(&mut self.tab, Tab::Settings, "⚙ Settings");
-                ui.selectable_value(&mut self.tab, Tab::Editor, "✂ Editor");
-                ui.selectable_value(&mut self.tab, Tab::Clips, "🎞 Clips");
+                ui.selectable_value(&mut self.tab, Tab::Settings, "Settings");
+                ui.selectable_value(&mut self.tab, Tab::Editor, "Editor");
+                ui.selectable_value(&mut self.tab, Tab::Clips, "Clips");
             });
         });
     }
@@ -397,11 +397,11 @@ impl LiteApp {
             let total: u64 = self.clips.iter().map(|c| c.size).sum();
             ui.label(RichText::new(format!("{} clips · {}", self.clips.len(), fmt_size(total))).weak());
             ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
-                if ui.button("📂 Open folder").clicked() {
+                if ui.button("Open folder").clicked() {
                     let _ = std::fs::create_dir_all(&dir);
                     platform::open_path(&dir);
                 }
-                if ui.button("⟳ Refresh").clicked() {
+                if ui.button("Refresh").clicked() {
                     self.reload_clips();
                 }
                 ui.add(egui::TextEdit::singleline(&mut self.filter).hint_text("Search…").desired_width(180.0));
@@ -481,19 +481,19 @@ impl LiteApp {
                                 ui.label(RichText::new(info.join("  ·  ")).weak());
                                 ui.add_space(4.0);
                                 ui.horizontal(|ui| {
-                                    if ui.button("✂ Edit").clicked() {
+                                    if ui.button("Edit").clicked() {
                                         action = Some((0, c.path.clone()));
                                     }
-                                    if ui.button("▶ Play").clicked() {
+                                    if ui.button("Play").clicked() {
                                         action = Some((1, c.path.clone()));
                                     }
-                                    if ui.button("📁 Show").clicked() {
+                                    if ui.button("Show in folder").clicked() {
                                         action = Some((2, c.path.clone()));
                                     }
-                                    if ui.button("✏ Rename").clicked() {
+                                    if ui.button("Rename").clicked() {
                                         action = Some((3, c.path.clone()));
                                     }
-                                    if ui.button(RichText::new("🗑 Delete").color(Color32::from_rgb(230, 110, 110))).clicked() {
+                                    if ui.button(RichText::new("Delete").color(Color32::from_rgb(230, 110, 110))).clicked() {
                                         action = Some((4, c.path.clone()));
                                     }
                                 });
@@ -643,7 +643,7 @@ impl LiteApp {
                 ))
                 .weak());
                 ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
-                    if ui.button("✖ Close").clicked() {
+                    if ui.button("Close").clicked() {
                         close = true;
                     }
                 });
@@ -725,7 +725,7 @@ impl LiteApp {
             let mut seek: Option<f64> = None;
             ui.horizontal(|ui| {
                 let playing = ed.player.is_some();
-                if ui.button(if playing { "⏸ Pause" } else { "▶ Play" }).on_hover_text("Space").clicked() || k_space {
+                if ui.button(if playing { "Pause" } else { "Play" }).on_hover_text("Space").clicked() || k_space {
                     if playing {
                         ed.player = None;
                         ed.pending_grab = Some(ed.playhead);
@@ -734,34 +734,34 @@ impl LiteApp {
                         ed.player = Player::start(&tools, ed.path.clone(), t, ed.preview_audio, ctx.clone());
                     }
                 }
-                if ui.button("⏮").on_hover_text("Back 1s (←)").clicked() || k_left {
+                if ui.button("-1s").on_hover_text("Back 1s (Left arrow)").clicked() || k_left {
                     seek = Some(ed.playhead - 1.0);
                 }
-                if ui.button("⏭").on_hover_text("Forward 1s (→)").clicked() || k_right {
+                if ui.button("+1s").on_hover_text("Forward 1s (Right arrow)").clicked() || k_right {
                     seek = Some(ed.playhead + 1.0);
                 }
                 ui.label(RichText::new(format!("{} / {}", fmt_time(ed.playhead), fmt_time(dur))).monospace());
                 ui.checkbox(&mut ed.preview_audio, "Preview sound");
                 ui.separator();
-                if ui.button("✂ Split here").on_hover_text("S").clicked() || k_split {
+                if ui.button("Split here").on_hover_text("S").clicked() || k_split {
                     ed.split_at(ed.playhead);
                 }
                 let i = ed.segment_at(ed.playhead);
-                let lbl = if ed.cut[i] { "↺ Keep this part" } else { "🗑 Cut this part" };
+                let lbl = if ed.cut[i] { "Keep this part" } else { "Cut this part" };
                 if ui.button(lbl).on_hover_text("D").clicked() || k_toggle {
                     ed.cut[i] = !ed.cut[i];
                     if ed.cut.iter().all(|&c| c) {
                         ed.cut[i] = false;
                     }
                 }
-                if ui.button("⇤ Trim start").on_hover_text("Cut everything before the playhead").clicked() {
+                if ui.button("Trim start").on_hover_text("Cut everything before the playhead").clicked() {
                     ed.split_at(ed.playhead);
                     let i = ed.segment_at(ed.playhead + 0.001);
                     for j in 0..i {
                         ed.cut[j] = true;
                     }
                 }
-                if ui.button("Trim end ⇥").on_hover_text("Cut everything after the playhead").clicked() {
+                if ui.button("Trim end").on_hover_text("Cut everything after the playhead").clicked() {
                     ed.split_at(ed.playhead);
                     let i = ed.segment_at(ed.playhead - 0.001);
                     for j in (i + 1)..ed.cut.len() {
@@ -850,7 +850,7 @@ impl LiteApp {
                         export_done = Some(r);
                     }
                 } else if ui
-                    .add(egui::Button::new(RichText::new("⬇ Export clip").strong()).fill(ACCENT.linear_multiply(0.5)))
+                    .add(egui::Button::new(RichText::new("Export clip").strong()).fill(ACCENT.linear_multiply(0.5)))
                     .clicked()
                 {
                     let name = ed.out_name.trim().replace(['\\', '/', ':', '*', '?', '"', '<', '>', '|'], "_");
@@ -881,7 +881,7 @@ impl LiteApp {
                         ctx.clone(),
                     ));
                 }
-                ui.label(RichText::new("Keys: Space play · S split · D cut/keep · ←/→ seek").weak().small());
+                ui.label(RichText::new("Keys: Space play, S split, D cut/keep, Left/Right seek").weak().small());
             });
             if export_done.is_some() {
                 ed.job = None;
@@ -917,7 +917,7 @@ impl LiteApp {
         ui.horizontal(|ui| {
             ui.heading("Settings");
             ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
-                if ui.add_enabled(dirty, egui::Button::new(RichText::new("✔ Save & apply").strong()).fill(if dirty { ACCENT.linear_multiply(0.5) } else { Color32::from_gray(45) })).clicked() {
+                if ui.add_enabled(dirty, egui::Button::new(RichText::new("Save & apply").strong()).fill(if dirty { ACCENT.linear_multiply(0.5) } else { Color32::from_gray(45) })).clicked() {
                     self.apply_settings(saved.clone());
                 }
                 if ui.add_enabled(dirty, egui::Button::new("Revert")).clicked() {
@@ -1109,7 +1109,7 @@ impl LiteApp {
                 });
                 ui.end_row();
                 ui.label("");
-                if ui.small_button("⟳ Refresh device list").clicked() {
+                if ui.small_button("Refresh device list").clicked() {
                     self.devices_loaded = false;
                 }
                 ui.end_row();
@@ -1152,7 +1152,7 @@ impl LiteApp {
                 ui.selectable_value(&mut d.clip_sound, ClipSound::Off, "Off");
                 ui.selectable_value(&mut d.clip_sound, ClipSound::Chime, "Chime");
                 ui.selectable_value(&mut d.clip_sound, ClipSound::Custom, "Custom .wav");
-                if ui.button("🔊 Test").clicked() {
+                if ui.button("Test").clicked() {
                     platform::play_clip_sound(d);
                 }
             });
