@@ -1,0 +1,28 @@
+name: Bug report
+description: Something isn't working
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: What did you do, what did you expect, and what happened instead?
+    validations:
+      required: true
+  - type: input
+    id: hardware
+    attributes:
+      label: GPU / CPU
+      placeholder: e.g. Intel Iris Plus, i5-1035G4
+  - type: input
+    id: encoder
+    attributes:
+      label: Encoder and capture method
+      description: Shown in Settings → Replay buffer & video
+      placeholder: e.g. h264_qsv, Desktop Duplication
+  - type: textarea
+    id: log
+    attributes:
+      label: ffmpeg log
+      description: Contents of %LOCALAPPDATA%\LiteClip\buffer\ffmpeg.log, if there is one
+      render: text

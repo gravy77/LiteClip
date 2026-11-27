@@ -1,0 +1,22 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    env:
+      RUSTFLAGS: --remap-path-prefix=${{ github.workspace }}=liteclip
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - name: Build (release)
+        run: cargo build --release --locked
+      - uses: actions/upload-artifact@v4
+        with:
+          name: LiteClip-windows-x64
+          path: target/release/liteclip.exe
